@@ -35,3 +35,15 @@ sudo apt-get install docker-ce docker-ce-cli containerd.io
 ```bash
 docker --version
 ```
+
+### docker 사용 권한
+
+docker는 root 계정으로 실행되기 때문에 sudo를 사용해야 한다.
+
+```bash
+# 해당 유저를 docker 그룹에 포함
+sudo usermod -aG docker {유저명}
+# 도커 재실행
+sudo service docker restart
+# 유저 재시작
+```
