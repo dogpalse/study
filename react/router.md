@@ -1,10 +1,10 @@
 # Router
 ---
-6버전으로 업데이트되면서 사용 방법이 많이 바꼈다.
-`<Switch>` -> `<Routes>`
+6버전으로 업데이트되면서 사용 방법이 많이 바꼈다.  
+`<Switch>` -> `<Routes>`  
 `<Route path='' component={ Component } />` -> `<Route path='' element={<Component />} />`
 > Reference
-> [공식문서 보기](reactrouter.com)
+> [공식문서](reactrouter.com)
 
 ### 1. 개념
 라우팅: 사용자가 요청한 URL에 맞는 페이지를 보여주는 것
