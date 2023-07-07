@@ -2,15 +2,15 @@
 
 ## 0. 정리
 
-### repository
+### Repository
 
 Repository는 코드 원본이 저장되는 공간.
 
-### trunk
+### Trunk
 
 메인 개발 소스
 
-### branch
+### Branch
 
 trunk에서 분기된 개발 소스
 

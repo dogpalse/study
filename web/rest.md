@@ -42,7 +42,6 @@ HTTP 프로토콜을 그대로 사용하므로 HTTP의 캐싱 기능을 사용�
 HTTP 프로토콜을 사용하는 모든 플랫폼에서 사용 가능하다.
 
 # REST API
----
 ### API(Application Programming Interface)
 데이터와 기능을 프로그램 간에 통신할 수 있게 해주는 매개체
 

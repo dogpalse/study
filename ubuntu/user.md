@@ -14,6 +14,15 @@ sudo adduser "유저명"
 cat /etc/passwd
 ```
 
+### useradd
+
+- 계정만 생성
+
+```bash
+sudo useradd '유저명'
+sudo passwd '유저명'
+```
+
 ## 2. 접속
 
 ```bash
