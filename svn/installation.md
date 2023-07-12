@@ -38,10 +38,11 @@ $ sudo adduser svn
 
 ```bash
 # svn 계정 사용
-$ su svn
-$ mkdir /home/svn/repo
-$ svnadmin create /home/svn/repo/{프로젝트명}
-$ cd ~/repo/{프로젝트명}
+# $ su svn      # svn1234!!
+$ sudo mkdir /svn/repos
+$ sudo chown -R svn:svn /svn/repos
+$ svnadmin create /svn/repo/{프로젝트명}
+$ cd /svn/repos/{프로젝트명}
 $ ls -al
 drwxrwxr-x 6 svn svn 4096  4월 10 14:25 ./
 drwxr-x--- 4 svn svn 4096  4월 10 14:54 ../
@@ -55,19 +56,22 @@ drwxrwxr-x 2 svn svn 4096  4월 10 14:25 locks/
 
 ## 3. 설정
 
-### 유저 및 권한
+### 유저 및 권한 설정
 
 ```bash
 # repository 디렉토리로 이동
-$ cd ~/repo/{프로젝트명}/conf
+$ cd /svn/repos/{프로젝트명}/conf
 
-# 유저 설정
+###
+### 유저 설정
+###
 $ vi ./passwd
 **************** passwd ******************
 [users]
 # harry = harryssecret
 # sally = sallyssecret
-#############
+
+###
 # 작성 형식
 # 유저명 = 비번
 admin = admin
@@ -76,7 +80,9 @@ tari = nmnmnm
 user = user
 ******************************************
 
-# 권한 설정
+###
+### 권한 설정
+###
 $ vi ./authz
 **************** authz ******************
 # 그룹명 설정
@@ -95,10 +101,10 @@ tari = rw
 ******************************************
 ```
 
-### 서버
+### 서버 설정
 
 ```bash
-cd ~/repo/{프로젝트명}/conf
+cd /svn/repos/{프로젝트명}/conf
 vi ./svnserve.conf
 ##### 아래 항목 주석 제거 #####
 # anon-access = read
@@ -115,10 +121,12 @@ vi ./svnserve.conf
 ## 4. service 등록
 
 ```bash
+###
 # svn 실행
-svnserve -d -r /home/svn/repo
+# /svn/repos에 있는 리파지토리 모두 실행
+svnserve -d -r /svn/repos
 # svn 확인
-sudo svn checkout svn://localhost/test
+sudo svn checkout svn://localhost/{프로젝트명}
 ```
 
 ```bash
