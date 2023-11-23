@@ -33,7 +33,7 @@ if(process.env.profile == 'prod') {
 }
 ```
 
-### 커스텀 포멧 지정
+### 커스텀 포멧 적용
 
 ```javascript
 const express = require('express');
