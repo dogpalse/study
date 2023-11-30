@@ -6,20 +6,25 @@
 ## 설치
 
 ```bash
-$ npm i sequelize sequelize-cli
+
+npm i sequelize sequelize-cli
 # 아래 중 환경에 맞는 DB 드라이버 선택해서 패키지 설치
-$ npm i pg pg-hstore        # postgresql
-$ npm i mysql2              # mysql
-$ npm i mariadb             # mariadb
-$ npm i sqlite3             # sqlite
-$ npm i oracledb            # oracle
+npm i pg pg-hstore        # postgresql
+npm i mysql2              # mysql
+npm i mariadb             # mariadb
+npm i sqlite3             # sqlite
+npm i oracledb            # oracle
 
 # sequelize 적용
-$ npx sequelize init
+npx sequelize init
+
+# sequelize-cli를 전역으로 설치 시
+npm install -g sequelize-cli
+sequelize init
 ```
 
-*`sequelize-cli`는 CLI에서 sequelize를 사용할 수 있게 하는 모듈이다.*  
-*`npx sequelize init`으로 config, models, migrations, seeders 디렉토리 자동 생성된다.*
+*`sequelize-cli`는 CLI에서 sequelize를 사용할 수 있게 하는 모듈.*  
+*`npx sequelize init`으로 config, models, migrations, seeders 디렉토리 자동 생성.*
 
 ## 사용
 
@@ -28,26 +33,40 @@ $ npx sequelize init
 ```json
 // config/config.json
 {
-    "development": {
+    "development-myqsl": {
         "username": "root",
         "password": "mysql",
         "database": "test",
         "host": "127.0.0.1",
         "dialect": "mysql"
     },
-    "production": {
+    "production-mysql": {
         "username": "postgres",
         "password": "postgres",
         "database": "vm",
         "host": "localhost",
+        "dialect": "postgres"
+    },
+    "development-postgres": {
+        "username": "test",
+        "password": "test1234!",
+        "database": "testdb",
+        "host": "127.0.0.1",
+        "dialect": "postgres"
+    },
+    "production-postgres": {
+        "username": "test",
+        "password": "test1234!!",
+        "database": "proddb",
+        "host": "127.0.0.1",
         "dialect": "postgres"
     }
 }
 ```
 
 **config 호출**  
-dev: `const config = require('config/config')["development"]`  
-prod: `const config = require('config/config')["production"]`
+dev: `const config = require('config/config')["development-'DB"]`  
+prod: `const config = require('config/config')["production-'DB'"]`
 
 ### 2. DB 연결
 
@@ -71,9 +90,24 @@ User.associate(db);
 module.exports = db;
 ```
 
-### 3. 모델 생성
+```javascript
+// server.js
+const express = require('express');
+const { sequelize } = require('./models');
 
-`sequelize.define`로 모델 생성
+const paa = express();
+
+sequelize.sync({ force: false })        // force: true => 서버가 실행될 때마다 테이블 재생성.
+    .then(() => {
+        console.log('DB 연결 성공');
+    }).catch(err => {
+        console.error(err);
+    });
+```
+
+### 3. 모델 정의
+
+#### `sequelize.define`로 모델 생성
 
 ```javascript
 // models/User.js
@@ -90,7 +124,7 @@ const User = sequelize.define('User', {
     }
 }, {
     // Model Options
-    timestamp: true,
+    timestamp: true,            
     paranoid: false,
     underscored: false,
     modelName: "User",
@@ -102,7 +136,16 @@ const User = sequelize.define('User', {
 module.exports = User;
 ```
 
-`Model` 상속으로 모델 생성
+**Sequlize에서 id 컬럼을 PK 값으로 자동 생성**  
+**"MySQL", "MariaDB"는 charset:'utf8mb4' 적용. "PostgreSQl"은 'utf8' 적용.**  
+**sequelize는 자동으로 createdAt, updatedAt 생성, "timestamp: false" 하면 생성 X**  
+**"createdAt: false" > createdAt 컬럼 생성 X**  
+**"createdAt: 'created_dt'" > "createdAt" 컬럼을 "created_dt"로 생성.**  
+**"paranoid"는 "timestamp"가 true일 때만 사용 가능 > "deletedAt" 컬럼이 생성.**  
+**"underscored: true" 일 때 자동 생성되는 컬럼(createdAt, updatedAt, deletedAt)을 스네이크 형식으로 생성.**  
+
+
+#### `Model` 상속으로 모델 생성
 
 ```javascript
 // models/User.js
@@ -153,7 +196,35 @@ module.exports = class User extends Sequelize.Model {
 }
 ```
 
-### 4. DB 생성
+#### Model 연결
+
+```javascript
+// models/index.js
+const Sequelize = require('sequelize');
+const User = require('./user');
+
+const env = process.env.NODE_ENV || 'development';
+const config = require(__dirname + '/../config/config.json')[env];
+const db = {};
+
+const sequelize = new Sequelize(config.database, config.username, config.password, config);
+
+db.sequelize = sequelize;
+
+db.User = User;
+
+User.associate(db);
+
+module.exports = db;
+```
+
+### 4. Query
+
+```javascript
+const [result, metadata] = await sequelize.query('SELECT * FROM users');
+```
+
+### 5. DB 생성
 
 ```bash
 $ npx sequelize db:create
