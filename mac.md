@@ -50,5 +50,7 @@ nvm ls
 
 ## 8. docker 설치
 
-## 9. dbevear 설치
+## 9. dbeaver 설치
+
+[dbeaver](https://dbeaver.io/download/)
 
